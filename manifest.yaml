@@ -1,40 +1,97 @@
-compat: v0
 id: mastodon
-version: 3.3.0.1
 title: Mastodon
+version: 3.3.0.2
+release-notes: "Upgrade to EmbassyOS v0.3.0"
+license: mit
+wrapper-repo: "https://github.com/Start9Labs/mastodon-wrapper"
+upstream-repo: "https://github.com/Start9Labs/mastodon/tree/cli-edits"
+support-site: "https://discourse.joinmastodon.org/"
+marketing-site: "https://joinmastodon.org/"
+donation-url: "https://patreon.com/mastodon"
+build: ["make"]
+min-os-version: "0.3.0"
 description:
-  short: "A free, open-source social network server."
-  long: "Mastodon is a free, open-source social network server based on ActivityPub where users can follow friends and discover new ones. On Mastodon, users can publish anything they want: links, pictures, text, video. All Mastodon servers are interoperable as a federated network (users on one server can seamlessly communicate with users from another one, including non-Mastodon software that implements ActivityPub)!"
-release-notes: Added an action to reset the admin password
-ports:
-  - internal: 80
-    tor: 80
-    lan: null
-  - internal: 3000
-    tor: 3000
-  - internal: 4000
-    tor: 4000
-image:
-  type: tar
-mount: /root/persistence
-has-instructions: true
-install-alert: |
-  After starting mastodon for the first time, it can take a long time (several minutes) to be ready.
-  Please be patient. On future starts of the service, it will be faster, but still takes longer than other services.
-  Make sure to sign up for a user before giving out your link. The first user to sign up is set as the admin user.
-start-alert: |
-  It may take several minutes after startup for this service to be ready for use.
-os-version-required: ">=0.2.9"
-os-version-recommended: ">=0.2.9"
-assets: []
-hidden-service-version: v3
+  short: A free, open-source social network server
+  long: |
+    Mastodon is a free, open-source social network server based on ActivityPub where users can follow friends and discover new ones. On Mastodon, users can publish anything they want: links, pictures, text, video. All Mastodon servers are interoperable as a federated network (users on one server can seamlessly communicate with users from another one, including non-Mastodon software that implements ActivityPub)!
+assets:
+  license: LICENSE
+  icon: icon.png
+  instructions: instructions.md
+  docker-images: image.tar
+  icon-type: png
+main:
+  type: docker
+  image: main
+  entrypoint: "/usr/local/bin/docker_entrypoint.sh"
+  args: []
+  mounts: {}
+  io-format: yaml
+health-checks: {}
+config:
+  get:
+    type: docker
+    image: compat
+    entrypoint: config
+    args: 
+      - "get"
+      - "/root/persistence"
+    mounts: {}
+    io-format: yaml
+  set:
+    type: docker
+    image: compat
+    entrypoint: config
+    args:
+      - "set"
+      - "/root/persistence"
+    mounts: {}
+    io-format: yaml
 dependencies: {}
+volumes: {}
+alerts:
+  install: |
+    After starting mastodon for the first time, it can take a long time (several minutes) to be ready.
+    Please be patient. On future starts of the service, it will be faster, but still takes longer than other services.
+    Make sure to sign up for a user before giving out your link. The first user to sign up is set as the admin user.
+  start: |
+    It may take several minutes after startup for this service to be ready for use.
+interfaces:
+  main:
+    tor-config:
+      port-mapping:
+        80: "80"
+        3000: "3000"
+        4000: "4000"
+    ui: true
+    protocols:
+      - tcp
+      - http
+backup:
+  create:
+    type: docker
+    image: compat
+    system: true
+    entrypoint: "true"
+    args: []
+    mounts: {}
+  restore:
+    type: docker
+    image: compat
+    system: true
+    entrypoint: "true"
+    args: []
+    mounts: {}
 actions:
-  - id: reset-admin-password
+  reset-admin-password:
     name: Reset Admin Password
     description: This action will reset your admin password to a random value
     allowed-statuses:
-      - RUNNING
-    command:
-      - docker_entrypoint.sh
-      - reset_admin_password.sh
+      - running
+    implementation:
+      type: docker
+      image: compat
+      system: true
+      entrypoint: docker_entrypoint.sh
+      args: ["reset_admin_password.sh"]
+      mounts: {}

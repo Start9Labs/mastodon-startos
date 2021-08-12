@@ -13,4 +13,4 @@ mastodon.s9pk: manifest.yaml config_spec.yaml config_rules.yaml image.tar instru
 	appmgr -vv verify mastodon.s9pk
 
 image.tar: Dockerfile docker_entrypoint.sh nginx.conf reset_admin_password.sh mastodon
-	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/mastodon --platform=linux/arm/v7 -o type=docker,dest=image.tar .
+	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/mastodon --platform=linux/arm64 -o type=docker,dest=image.tar .

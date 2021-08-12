@@ -1,4 +1,4 @@
-FROM arm32v7/ruby:2.6.6-alpine3.12
+FROM arm64v8/ruby:2.6-alpine3.13
 
 ENV BIND=0.0.0.0 \
     RAILS_SERVE_STATIC_FILES=true \
