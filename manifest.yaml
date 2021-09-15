@@ -19,36 +19,62 @@ assets:
   icon: icon.png
   instructions: instructions.md
   docker-images: image.tar
-  icon-type: png
 main:
   type: docker
   image: main
-  entrypoint: "/usr/local/bin/docker_entrypoint.sh"
+  entrypoint: /usr/local/bin/docker_entrypoint.sh
   args: []
-  mounts: {}
+  mounts:
+    main: /root/persistence
+    compat: /mnt/assets
   io-format: yaml
 health-checks: {}
 config:
   get:
     type: docker
     image: compat
-    entrypoint: config
+    system: true
+    entrypoint: compat
     args: 
-      - "get"
-      - "/root/persistence"
-    mounts: {}
+      - config
+      - get
+      - /root/persistence
+      - /mnt/assets/config_spec.yaml
+    mounts:
+      main: /root/persistence
+      compat: /mnt/assets
     io-format: yaml
   set:
     type: docker
     image: compat
-    entrypoint: config
+    system: true
+    entrypoint: compat
     args:
-      - "set"
-      - "/root/persistence"
-    mounts: {}
+      - config
+      - set
+      - mastodon
+      - /root/persistence
+      - /mnt/assets/config_rules.yaml
+    mounts:
+      main: /root/persistence
+      compat: /mnt/assets
     io-format: yaml
-dependencies: {}
-volumes: {}
+properties:
+  type: docker
+  image: compat
+  system: true
+  entrypoint: compat
+  args:
+    - properties
+    - /root/persistence
+  mounts:
+    main: /root/persistence
+  io-format: yaml
+volumes:
+  main:
+    type: data
+  compat:
+    type: assets
 alerts:
   install: |
     After starting mastodon for the first time, it can take a long time (several minutes) to be ready.
@@ -58,6 +84,8 @@ alerts:
     It may take several minutes after startup for this service to be ready for use.
 interfaces:
   main:
+    name: Main Interface
+    description: Hosts the Mastodon web app and the federation API
     tor-config:
       port-mapping:
         80: "80"
@@ -67,21 +95,37 @@ interfaces:
     protocols:
       - tcp
       - http
+      - activitypub
+dependencies: {}
 backup:
   create:
     type: docker
     image: compat
     system: true
-    entrypoint: "true"
-    args: []
-    mounts: {}
+    entrypoint: compat
+    args:
+      - duplicity
+      - create
+      - mastodon
+      - /mnt/backup
+      - /root/persistence
+    mounts:
+      backup: /mnt/backup
+      main: /root/persistence
   restore:
     type: docker
     image: compat
     system: true
-    entrypoint: "true"
-    args: []
-    mounts: {}
+    entrypoint: /mnt/assets/backup-restore.sh
+    args:
+      - restore
+      - mastodon
+      - /root/persistence
+      - /mnt/backup
+    mounts:
+      backup: /mnt/backup
+      main: /root/persistence
+      compat: /mnt/assets
 actions:
   reset-admin-password:
     name: Reset Admin Password
@@ -92,6 +136,8 @@ actions:
       type: docker
       image: compat
       system: true
-      entrypoint: docker_entrypoint.sh
-      args: ["reset_admin_password.sh"]
-      mounts: {}
+      entrypoint: /mnt/assets/reset_admin_password.sh
+      args: []
+      mounts:
+        main: /root/persistence
+        compat: /mnt/assets

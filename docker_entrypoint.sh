@@ -13,6 +13,7 @@ _term() {
   kill -TERM "$privoxy_child" 2> /dev/null
 }
 
+export TOR_ADDRESS=$(yq e '.tor-address' /root/persistence/start9/config.yaml)
 HOST_IP=$(ip -4 route list match 0/0 | awk '{print $3}')
 echo "$HOST_IP   tor" >> /etc/hosts
 
