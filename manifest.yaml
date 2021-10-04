@@ -1,7 +1,7 @@
 id: mastodon
 title: Mastodon
-version: 3.3.0.2
-release-notes: "Upgrade to EmbassyOS v0.3.0"
+version: 3.4.1
+release-notes: "Upgrade to Mastodon 3.4.1 and EmbassyOS v0.3.0"
 license: mit
 wrapper-repo: "https://github.com/Start9Labs/mastodon-wrapper"
 upstream-repo: "https://github.com/Start9Labs/mastodon/tree/cli-edits"
@@ -22,7 +22,7 @@ assets:
 main:
   type: docker
   image: main
-  entrypoint: /usr/local/bin/docker_entrypoint.sh
+  entrypoint: docker_entrypoint.sh
   args: []
   mounts:
     main: /root/persistence
@@ -127,17 +127,16 @@ backup:
       main: /root/persistence
       compat: /mnt/assets
 actions:
-  reset-admin-password:
-    name: Reset Admin Password
-    description: This action will reset your admin password to a random value
+  reset-first-user:
+    name: Reset First User
+    description: This action will make your earliest registered user account an admin, and reset its password to a random value.
     allowed-statuses:
       - running
     implementation:
       type: docker
-      image: compat
-      system: true
-      entrypoint: /mnt/assets/reset_admin_password.sh
-      args: []
-      mounts:
-        main: /root/persistence
-        compat: /mnt/assets
+      image: main
+      system: false
+      entrypoint: docker_entrypoint.sh
+      args: ["reset_first_user.sh"]
+      io-format: json
+      inject: true

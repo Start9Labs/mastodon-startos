@@ -80,8 +80,9 @@ RUN apk add -t build-dependencies \
     && apk del build-dependencies \
     && rm -rf /var/cache/apk/* /tmp/src
 
-RUN wget https://beta-registry.start9labs.com/sys/yq -O /usr/local/bin/yq \
-    && chmod +x /usr/local/bin/yq
+RUN wget https://github.com/mikefarah/yq/releases/download/v4.12.2/yq_linux_arm.tar.gz -O - |\
+    tar xz && mv yq_linux_arm /usr/bin/yq
+
 RUN mkdir /run/nginx \
     && mkdir /run/postgresql \
     && chmod 777 /run \
@@ -89,6 +90,8 @@ RUN mkdir /run/nginx \
 ADD ./nginx.conf /etc/nginx/conf.d/default.conf
 ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh
 RUN chmod a+x /usr/local/bin/docker_entrypoint.sh
+ADD ./reset_first_user.sh /usr/local/bin/reset_first_user.sh
+RUN chmod a+x /usr/local/bin/reset_first_user.sh
 
 EXPOSE 80 3000 4000
 

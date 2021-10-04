@@ -13,5 +13,5 @@ mastodon.s9pk: manifest.yaml assets/compat/* image.tar instructions.md
 install: mastodon.s9pk
 	embassy-cli package install mastodon.s9pk
 
-image.tar: Dockerfile docker_entrypoint.sh nginx.conf mastodon
+image.tar: Dockerfile docker_entrypoint.sh reset_first_user.sh nginx.conf mastodon
 	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/mastodon/main:$(VERSION) --platform=linux/arm64 -o type=docker,dest=image.tar .
