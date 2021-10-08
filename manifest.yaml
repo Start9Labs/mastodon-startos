@@ -28,7 +28,17 @@ main:
     main: /root/persistence
     compat: /mnt/assets
   io-format: yaml
-health-checks: {}
+health-checks:
+  federation:
+    type: docker
+    image: utils
+    system: true
+    entrypoint: curl
+    args:
+      - http://mastodon.embassy:3000
+    mounts: {}
+    io-format: yaml
+    critical: false
 config:
   get:
     type: docker
