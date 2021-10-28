@@ -120,22 +120,22 @@ backup:
       - /mnt/backup
       - /root/persistence
     mounts:
-      backup: /mnt/backup
+      BACKUP: /mnt/backup
       main: /root/persistence
   restore:
     type: docker
     image: compat
     system: true
-    entrypoint: /mnt/assets/backup-restore.sh
+    entrypoint: compat
     args:
+      - duplicity
       - restore
       - mastodon
       - /root/persistence
       - /mnt/backup
     mounts:
-      backup: /mnt/backup
+      BACKUP: /mnt/backup
       main: /root/persistence
-      compat: /mnt/assets
 actions:
   reset-first-user:
     name: Reset First User
