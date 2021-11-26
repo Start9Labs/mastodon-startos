@@ -30,6 +30,8 @@ main:
   io-format: yaml
 health-checks:
   federation:
+    name: Federation
+    description: Activates once your Mastodon server is federating properly with other Mastodon servers. Indicates that Mastodon is ready for use.
     type: docker
     image: utils
     system: true
@@ -38,7 +40,7 @@ health-checks:
       - http://mastodon.embassy:3000
     mounts: {}
     io-format: yaml
-    critical: false
+    severity: warning
 config:
   get:
     type: docker
@@ -116,12 +118,12 @@ backup:
     args:
       - duplicity
       - create
-      - mastodon
       - /mnt/backup
       - /root/persistence
     mounts:
       BACKUP: /mnt/backup
       main: /root/persistence
+    io-format: yaml
   restore:
     type: docker
     image: compat
@@ -130,12 +132,12 @@ backup:
     args:
       - duplicity
       - restore
-      - mastodon
-      - /root/persistence
       - /mnt/backup
+      - /root/persistence
     mounts:
       BACKUP: /mnt/backup
       main: /root/persistence
+    io-format: yaml
 actions:
   reset-first-user:
     name: Reset First User
