@@ -35,10 +35,10 @@ health-checks:
     type: docker
     image: utils
     system: true
-    entrypoint: curl
-    args:
-      - http://mastodon.embassy:3000
-    mounts: {}
+    entrypoint: /mnt/assets/check-federation.sh
+    args: []
+    mounts:
+      utils: /mnt/assets
     io-format: yaml
     severity: warning
 config:
@@ -86,6 +86,8 @@ volumes:
   main:
     type: data
   compat:
+    type: assets
+  utils:
     type: assets
 alerts:
   install: |
