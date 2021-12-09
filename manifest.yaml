@@ -33,14 +33,13 @@ health-checks:
     name: Federation
     description: Activates once your Mastodon server is federating properly with other Mastodon servers. Indicates that Mastodon is ready for use.
     type: docker
-    image: utils
-    system: true
-    entrypoint: /mnt/assets/check-federation.sh
+    image: main
+    system: false
+    entrypoint: check-federation.sh
     args: []
-    mounts:
-      utils: /mnt/assets
+    mounts: {}
     io-format: yaml
-    severity: warning
+    inject: true
 config:
   get:
     type: docker
@@ -86,8 +85,6 @@ volumes:
   main:
     type: data
   compat:
-    type: assets
-  utils:
     type: assets
 alerts:
   install: |

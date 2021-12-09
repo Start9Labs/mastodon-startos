@@ -92,6 +92,8 @@ ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh
 RUN chmod a+x /usr/local/bin/docker_entrypoint.sh
 ADD ./reset_first_user.sh /usr/local/bin/reset_first_user.sh
 RUN chmod a+x /usr/local/bin/reset_first_user.sh
+ADD ./check-federation.sh /usr/local/bin/check-federation.sh
+RUN chmod a+x /usr/local/bin/check-federation.sh
 
 EXPOSE 80 3000 4000
 
