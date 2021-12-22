@@ -67,6 +67,7 @@ RUN apk add -t build-dependencies \
     binutils \
     findutils \
     npm \
+    curl \
     gnu-libiconv-dev \
     && npm i -g yarn \
     && cd /mastodon \
