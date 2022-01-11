@@ -18,6 +18,7 @@ RUN set -eux; \
 RUN apk -U upgrade
 RUN apk add \
     ca-certificates \
+    curl \
     ffmpeg \
     file \
     git \
@@ -67,7 +68,6 @@ RUN apk add -t build-dependencies \
     binutils \
     findutils \
     npm \
-    curl \
     gnu-libiconv-dev \
     && npm i -g yarn \
     && cd /mastodon \
