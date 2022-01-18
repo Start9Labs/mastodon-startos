@@ -151,3 +151,23 @@ actions:
       args: ["reset_first_user.sh"]
       io-format: json
       inject: true
+migrations:
+  from:
+    "<3.4.1":
+      type: docker
+      image: pg-migrate
+      system: false
+      entrypoint: "docker_entrypoint.sh"
+      args: []
+      mounts:
+        main: /root/persistence
+      io-format: json
+      inject: false
+  to:
+    "<3.4.1":
+      type: docker
+      image: main
+      entrypoint: sh
+      args: ["-c", 'json=''{"configured": true }'' && echo "$json"']
+      io-format: json
+      inject: true
