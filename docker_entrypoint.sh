@@ -87,7 +87,7 @@ postgres_child=$!
 if [ -f "/root/persistence/db_dump.sql" ]; then
   until sudo -u postgres psql postgres < /root/persistence/db_dump.sql
   do
-    echo 'postgres not ready, retrying in 1 second...'
+    >&2 echo 'postgres not ready, retrying in 1 second...'
     sleep 1
   done
   rm /root/persistence/db_dump.sql
