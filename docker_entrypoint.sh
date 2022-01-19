@@ -84,7 +84,7 @@ chown -R postgres:postgres /root/persistence/pgdata
 test -f /root/persistence/pgdata/PG_VERSION || sudo -u postgres initdb -D /root/persistence/pgdata
 sudo -u postgres postgres -D /root/persistence/pgdata &
 postgres_child=$!
-if [ -f "/root/persistence/db_dump.sql" ]; then
+if [ -s "/root/persistence/db_dump.sql" ]; then
   until sudo -u postgres psql postgres < /root/persistence/db_dump.sql
   do
     >&2 echo 'postgres not ready, retrying in 1 second...'

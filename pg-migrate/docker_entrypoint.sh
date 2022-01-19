@@ -21,7 +21,6 @@ sudo -u postgres postgres -D /root/persistence/pgdata &
 
 until sudo -u postgres pg_dump > /root/persistence/db_dump.sql
 do
-  # echo 'postgres not ready, retrying in 1 second...'
   sleep 1
 done
 
@@ -30,6 +29,5 @@ if [ -s /root/persistence/db_dump.sql ]; then
   echo '{"configured": true }'
   exit 0
 else
-  echo '{"configured": false }' >&2
   exit 1
 fi
