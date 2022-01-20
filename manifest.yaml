@@ -168,6 +168,6 @@ migrations:
       type: docker
       image: main
       entrypoint: sh
-      args: ["-c", 'json=''{"configured": true }'' && echo "$json"']
+      args: []
       io-format: json
       inject: true

@@ -29,5 +29,6 @@ if [ -s /root/persistence/db_dump.sql ]; then
   echo '{"configured": true }'
   exit 0
 else
+  echo "FATAL: Migration failed." >&2
   exit 1
 fi
