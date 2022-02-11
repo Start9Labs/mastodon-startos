@@ -6,7 +6,7 @@ DOCKER_CUR_ENGINE := $(shell docker buildx ls | grep "*" | awk '{print $$1;}')
 all: verify
 	
 verify: mastodon.s9pk
-	embassy-sdk verify mastodon.s9pk
+	embassy-sdk verify s9pk mastodon.s9pk
 
 mastodon.s9pk: manifest.yaml assets/compat/* image.tar instructions.md
 	embassy-sdk pack
