@@ -1,16 +1,22 @@
-ASSETS := $(shell yq e '.assets.[].src' manifest.yaml)
-ASSET_PATHS := $(addprefix assets/,$(ASSETS))
+VERSION := $(shell yq e ".version" manifest.yaml)
+DOCKER_CUR_ENGINE := $(shell docker buildx ls | grep "*" | awk '{print $$1;}')
 
 .DELETE_ON_ERROR:
 
-all: mastodon.s9pk
+all: verify
+	
+verify: mastodon.s9pk
+	embassy-sdk verify s9pk mastodon.s9pk
+
+mastodon.s9pk: manifest.yaml assets/compat/* image.tar instructions.md
+	embassy-sdk pack
 
 install: mastodon.s9pk
-	appmgr install mastodon.s9pk
+	embassy-cli package install mastodon.s9pk
 
-mastodon.s9pk: manifest.yaml config_spec.yaml config_rules.yaml image.tar instructions.md $(ASSET_PATHS)
-	appmgr -vv pack $(shell pwd) -o mastodon.s9pk
-	appmgr -vv verify mastodon.s9pk
-
-image.tar: Dockerfile docker_entrypoint.sh nginx.conf reset_admin_password.sh mastodon
-	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/mastodon --platform=linux/arm/v7 -o type=docker,dest=image.tar .
+image.tar: Dockerfile docker_entrypoint.sh reset_first_user.sh check-federation.sh nginx.conf mastodon pg-migrate/*
+	docker buildx use default
+	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/mastodon/main:$(VERSION) --platform=linux/arm64 .
+	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/mastodon/pg-migrate:$(VERSION) --platform=linux/arm64 -f pg-migrate/Dockerfile .
+	docker buildx use $(DOCKER_CUR_ENGINE)
+	docker save -o image.tar start9/mastodon/main:$(VERSION) start9/mastodon/pg-migrate:$(VERSION)

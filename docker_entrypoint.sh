@@ -13,6 +13,7 @@ _term() {
   kill -TERM "$privoxy_child" 2> /dev/null
 }
 
+export TOR_ADDRESS=$(yq e '.tor-address' /root/persistence/start9/config.yaml)
 HOST_IP=$(ip -4 route list match 0/0 | awk '{print $3}')
 echo "$HOST_IP   tor" >> /etc/hosts
 
@@ -83,6 +84,15 @@ chown -R postgres:postgres /root/persistence/pgdata
 test -f /root/persistence/pgdata/PG_VERSION || sudo -u postgres initdb -D /root/persistence/pgdata
 sudo -u postgres postgres -D /root/persistence/pgdata &
 postgres_child=$!
+if [ -s "/root/persistence/db_dump.sql" ]; then
+  until sudo -u postgres psql postgres < /root/persistence/db_dump.sql
+  do
+    >&2 echo 'postgres not ready, retrying in 1 second...'
+    sleep 1
+  done
+  rm /root/persistence/db_dump.sql
+fi
+
 mkdir -p /root/persistence/redis-data
 echo "dir /root/persistence/redis-data" | redis-server - &
 redis_child=$!

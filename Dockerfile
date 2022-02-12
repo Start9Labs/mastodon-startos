@@ -1,4 +1,4 @@
-FROM arm32v7/ruby:2.6.6-alpine3.12
+FROM arm64v8/ruby:2.6-alpine3.13
 
 ENV BIND=0.0.0.0 \
     RAILS_SERVE_STATIC_FILES=true \
@@ -18,6 +18,7 @@ RUN set -eux; \
 RUN apk -U upgrade
 RUN apk add \
     ca-certificates \
+    curl \
     ffmpeg \
     file \
     git \
@@ -80,8 +81,9 @@ RUN apk add -t build-dependencies \
     && apk del build-dependencies \
     && rm -rf /var/cache/apk/* /tmp/src
 
-RUN wget https://beta-registry.start9labs.com/sys/yq -O /usr/local/bin/yq \
-    && chmod +x /usr/local/bin/yq
+RUN wget https://github.com/mikefarah/yq/releases/download/v4.12.2/yq_linux_arm.tar.gz -O - |\
+    tar xz && mv yq_linux_arm /usr/bin/yq
+
 RUN mkdir /run/nginx \
     && mkdir /run/postgresql \
     && chmod 777 /run \
@@ -89,8 +91,10 @@ RUN mkdir /run/nginx \
 ADD ./nginx.conf /etc/nginx/conf.d/default.conf
 ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh
 RUN chmod a+x /usr/local/bin/docker_entrypoint.sh
-ADD ./reset_admin_password.sh /usr/local/bin/reset_admin_password.sh
-RUN chmod a+x /usr/local/bin/reset_admin_password.sh
+ADD ./reset_first_user.sh /usr/local/bin/reset_first_user.sh
+RUN chmod a+x /usr/local/bin/reset_first_user.sh
+ADD ./check-federation.sh /usr/local/bin/check-federation.sh
+RUN chmod a+x /usr/local/bin/check-federation.sh
 
 EXPOSE 80 3000 4000
 
