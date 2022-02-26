@@ -9,7 +9,6 @@ support-site: "https://discourse.joinmastodon.org/"
 marketing-site: "https://joinmastodon.org/"
 donation-url: "https://patreon.com/mastodon"
 build: ["make"]
-min-os-version: "0.3.0"
 description:
   short: A free, open-source social network server
   long: |
@@ -31,7 +30,7 @@ main:
 health-checks:
   federation:
     name: Federation
-    description: Activates once your Mastodon server is federating properly with other Mastodon servers. Indicates that Mastodon is ready for use.
+    success-message: Mastodon server is federating properly with other Mastodon servers and is ready for use.
     type: docker
     image: main
     system: false
