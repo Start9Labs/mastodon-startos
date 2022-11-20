@@ -1,5 +1,5 @@
 # FROM arm32v7/postgres:12-alpine
-FROM arm32v7/ruby:2.6-alpine3.12
+FROM ruby:2.6-alpine3.13
 
 # 70 is the standard uid/gid for "postgres" in Alpine
 # https://git.alpinelinux.org/aports/tree/main/postgresql/postgresql.pre-install?h=3.12-stable
@@ -9,7 +9,8 @@ RUN set -eux; \
     mkdir -p /var/lib/postgresql; \
     chown -R postgres:postgres /var/lib/postgresql
 
-RUN apk add postgresql sudo
+RUN apk add --no-cache postgresql sudo && \
+    rm -f /var/cache/apk/*
 
 RUN mkdir -p /run/postgresql \
     && chmod 777 /run \
