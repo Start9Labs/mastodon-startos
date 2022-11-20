@@ -1,4 +1,4 @@
-FROM ruby:2.6-alpine3.13
+FROM ruby:2.6-alpine3.14
 
 ENV BIND=0.0.0.0 \
     RAILS_SERVE_STATIC_FILES=true \

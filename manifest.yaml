@@ -25,7 +25,7 @@ main:
   args: []
   mounts:
     main: /root/persistence
-    compat: /mnt/assets
+#    compat: /mnt/assets
 health-checks:
   federation:
     name: Federation
@@ -47,8 +47,8 @@ config:
 volumes:
   main:
     type: data
-  compat:
-    type: assets
+#  compat:
+#    type: assets
 alerts:
   install: |
     After starting mastodon for the first time, it can take a long time (several minutes) to be ready.
