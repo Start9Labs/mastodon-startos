@@ -1,4 +1,4 @@
-FROM ruby:2.6-alpine3.14
+FROM ruby:2.6-alpine3.13
 
 ENV BIND=0.0.0.0 \
     RAILS_SERVE_STATIC_FILES=true \
@@ -33,7 +33,6 @@ RUN apk add --no-cache \
     su-exec \
     tzdata \
     yaml \
-    yq \
     readline \
     gcompat\
     bash \
@@ -79,6 +78,9 @@ RUN apk add --no-cache -t build-dependencies \
     && npm uninstall -g yarn \
     && apk del build-dependencies \
     && rm -rf /var/cache/apk/* /tmp/src
+
+ARG PLATFORM
+RUN wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_${PLATFORM} && chmod +x /usr/local/bin/yq
 
 RUN mkdir -p /run/nginx \
     && mkdir -p /run/postgresql \

@@ -1,5 +1,5 @@
 # FROM arm32v7/postgres:12-alpine
-FROM ruby:2.6-alpine3.14
+FROM ruby:2.6-alpine3.12
 
 # 70 is the standard uid/gid for "postgres" in Alpine
 # https://git.alpinelinux.org/aports/tree/main/postgresql/postgresql.pre-install?h=3.12-stable

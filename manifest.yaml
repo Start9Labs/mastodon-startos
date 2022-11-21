@@ -17,7 +17,6 @@ assets:
   license: LICENSE
   icon: icon.png
   instructions: instructions.md
-#  docker-images: image.tar
 main:
   type: docker
   image: main
@@ -25,7 +24,6 @@ main:
   args: []
   mounts:
     main: /root/persistence
-#    compat: /mnt/assets
 health-checks:
   federation:
     name: Federation
@@ -43,12 +41,11 @@ config:
     type: script
   set:
     type: script
-
+properties:
+  type: script
 volumes:
   main:
     type: data
-#  compat:
-#    type: assets
 alerts:
   install: |
     After starting mastodon for the first time, it can take a long time (several minutes) to be ready.
