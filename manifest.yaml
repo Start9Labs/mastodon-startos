@@ -1,7 +1,10 @@
 id: mastodon
 title: Mastodon
 version: 3.4.1.1
-release-notes: "Mastodon 3.4.1 optimised for x86_64"
+release-notes: |
+  This one is Universal Package aka Fattie
+  * added support to x86_64 and aarch64 architecture
+  * using mod.ts v0.3.3.0.5
 license: mit
 wrapper-repo: "https://github.com/Start9Labs/mastodon-wrapper"
 upstream-repo: "https://github.com/Start9Labs/mastodon/tree/cli-edits"
@@ -17,6 +20,7 @@ assets:
   license: LICENSE
   icon: icon.png
   instructions: instructions.md
+#  docker-images: image.tar
 main:
   type: docker
   image: main
