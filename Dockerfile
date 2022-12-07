@@ -1,4 +1,4 @@
-FROM arm64v8/ruby:2.6-alpine3.13
+FROM ruby:2.6-alpine3.13
 
 ENV BIND=0.0.0.0 \
     RAILS_SERVE_STATIC_FILES=true \
@@ -15,8 +15,7 @@ RUN set -eux; \
     chown -R postgres:postgres /var/lib/postgresql
 
 # Install dependencies
-RUN apk -U upgrade
-RUN apk add \
+RUN apk add --no-cache \
     ca-certificates \
     curl \
     ffmpeg \
@@ -36,7 +35,6 @@ RUN apk add \
     yaml \
     readline \
     gcompat\
-    tini \
     bash \
     nginx \
     postgresql \
@@ -49,7 +47,7 @@ RUN apk add \
 ADD ./mastodon /mastodon
 WORKDIR /mastodon
 
-RUN apk add -t build-dependencies \
+RUN apk add --no-cache -t build-dependencies \
     build-base \
     icu-dev \
     libidn-dev \
@@ -81,11 +79,11 @@ RUN apk add -t build-dependencies \
     && apk del build-dependencies \
     && rm -rf /var/cache/apk/* /tmp/src
 
-RUN wget https://github.com/mikefarah/yq/releases/download/v4.12.2/yq_linux_arm.tar.gz -O - |\
-    tar xz && mv yq_linux_arm /usr/bin/yq
+ARG PLATFORM
+RUN wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_${PLATFORM} && chmod +x /usr/local/bin/yq
 
-RUN mkdir /run/nginx \
-    && mkdir /run/postgresql \
+RUN mkdir -p /run/nginx \
+    && mkdir -p /run/postgresql \
     && chmod 777 /run \
     && chown postgres:postgres /run/postgresql
 ADD ./nginx.conf /etc/nginx/conf.d/default.conf
@@ -97,5 +95,3 @@ ADD ./check-federation.sh /usr/local/bin/check-federation.sh
 RUN chmod a+x /usr/local/bin/check-federation.sh
 
 EXPOSE 80 3000 4000
-
-ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/docker_entrypoint.sh"]

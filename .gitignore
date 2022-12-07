@@ -1,3 +1,10 @@
 mastodon.s9pk
 image.tar
 pg-migrate.tar
+scripts/embassy.js
+docker-images
+.DS_Store
+.vscode/
+icon.svg
+mastodon-x86_64.s9pk
+Dockerfile_old

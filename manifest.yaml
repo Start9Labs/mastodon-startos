@@ -1,7 +1,10 @@
 id: mastodon
 title: Mastodon
-version: 3.4.1
-release-notes: "Upgrade to Mastodon 3.4.1 and EmbassyOS v0.3.0"
+version: 3.4.1.1
+release-notes: |
+  This one is Universal Package aka Fattie
+  * added support to x86_64 and aarch64 architecture
+  * switch to using new eOS APIs for faster configuration and properties
 license: mit
 wrapper-repo: "https://github.com/Start9Labs/mastodon-wrapper"
 upstream-repo: "https://github.com/Start9Labs/mastodon/tree/cli-edits"
@@ -17,7 +20,7 @@ assets:
   license: LICENSE
   icon: icon.png
   instructions: instructions.md
-  docker-images: image.tar
+#  docker-images: image.tar
 main:
   type: docker
   image: main
@@ -25,8 +28,6 @@ main:
   args: []
   mounts:
     main: /root/persistence
-    compat: /mnt/assets
-  io-format: yaml
 health-checks:
   federation:
     name: Federation
@@ -41,39 +42,14 @@ health-checks:
     inject: true
 config:
   get:
-    type: docker
-    image: compat
-    system: true
-    entrypoint: compat
-    args: 
-      - config
-      - get
-      - /root/persistence
-      - /mnt/assets/config_spec.yaml
-    mounts:
-      main: /root/persistence
-      compat: /mnt/assets
-    io-format: yaml
+    type: script
   set:
-    type: docker
-    image: compat
-    system: true
-    entrypoint: compat
-    args:
-      - config
-      - set
-      - mastodon
-      - /root/persistence
-      - /mnt/assets/config_rules.yaml
-    mounts:
-      main: /root/persistence
-      compat: /mnt/assets
-    io-format: yaml
+    type: script
+properties:
+  type: script
 volumes:
   main:
     type: data
-  compat:
-    type: assets
 alerts:
   install: |
     After starting mastodon for the first time, it can take a long time (several minutes) to be ready.
@@ -110,7 +86,6 @@ backup:
     mounts:
       BACKUP: /mnt/backup
       main: /root/persistence
-    io-format: yaml
   restore:
     type: docker
     image: compat
@@ -124,7 +99,6 @@ backup:
     mounts:
       BACKUP: /mnt/backup
       main: /root/persistence
-    io-format: yaml
 actions:
   reset-first-user:
     name: Reset First User
