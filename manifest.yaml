@@ -4,7 +4,7 @@ version: 3.4.1.1
 release-notes: |
   This one is Universal Package aka Fattie
   * added support to x86_64 and aarch64 architecture
-  * using mod.ts v0.3.3.0.5
+  * switch to using new eOS APIs for faster configuration and properties
 license: mit
 wrapper-repo: "https://github.com/Start9Labs/mastodon-wrapper"
 upstream-repo: "https://github.com/Start9Labs/mastodon/tree/cli-edits"
